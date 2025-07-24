@@ -1,0 +1,222 @@
+<div class="panel panel-default" *ngIf="recipe">
+  <div class="panel-heading">
+    <div class="row">
+      <div class="col-xs-8">
+        <h3 class="panel-title">
+          <strong>{{recipe.title}}</strong>
+        </h3>
+      </div>
+      <div class="col-xs-4">
+        <div class="btn-group pull-right" role="group">
+          <button type="button" class="btn btn-warning btn-sm" (click)="onEditRecipe($event)">
+            <span class="glyphicon glyphicon-pencil"></span> Edit
+          </button>
+
+          <button type="button" class="btn btn-danger btn-sm" (click)="confirmDelete()">
+            <span class="glyphicon glyphicon-trash"></span> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe Info -->
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-4">
+        <img [src]="recipe.imageUrl || 'assets/images/default-recipe.jpg'" 
+             [alt]="recipe.title"
+             class="img-responsive img-thumbnail"
+             style="width: 100%; max-height: 200px; object-fit: cover;">
+      </div>
+      <div class="col-md-8">
+        <p class="lead">{{recipe.description}}</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Ingredients -->
+    <div class="row">
+      <div class="col-md-6">
+        <h4><span class="glyphicon glyphicon-list"></span> Ingredients</h4>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <ul class="list-unstyled">
+              <li *ngFor="let ingredient of recipe.ingredients" 
+                  style="margin-bottom: 8px; padding: 5px; border-left: 3px solid #ddd; padding-left: 10px;">
+                <strong>{{ingredient.amount}} {{ingredient.unit}}</strong> {{ingredient.name}}
+                <small class="text-muted">({{ingredient.category}})</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="col-md-6">
+        <h4><span class="glyphicon glyphicon-tasks"></span> Instructions</h4>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <ol>
+              <li *ngFor="let instruction of recipe.instructions" 
+                  style="margin-bottom: 10px; line-height: 1.4;">
+                {{instruction}}
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add to List Button -->
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <button type="button" class="btn btn-success btn-lg" (click)="onAddToShoppingList()">
+          <span class="glyphicon glyphicon-shopping-cart"></span> Add to Shopping List
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Message -->
+<div 
+  class="alert alert-success alert-dismissible" 
+  *ngIf="showSuccessMessage"
+  style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+  <button type="button" class="close" (click)="showSuccessMessage = false">
+    <span>&times;</span>
+  </button>
+  <strong>Success!</strong> {{successMessage}}
+</div>
+
+<!-- Delete Confirmation -->
+<div 
+  class="modal-backdrop-custom" 
+  *ngIf="showDeleteConfirm"
+  (click)="onDeleteConfirmed(false)">
+</div>
+
+<div 
+  class="modal show d-block" 
+  *ngIf="showDeleteConfirm" 
+  tabindex="-1" 
+  style="z-index: 1050;">
+  <div class="modal-dialog">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4 class="modal-title text-danger">Confirm Deletion</h4>
+        <button type="button" class="close" (click)="onDeleteConfirmed(false)">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete "<strong>{{ recipe?.title }}</strong>"?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="onDeleteConfirmed(true)">Yes, Delete</button>
+        <button class="btn btn-secondary" (click)="onDeleteConfirmed(false)">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Shopping List Confirmation -->
+<div 
+  class="modal-backdrop-custom" 
+  *ngIf="showShoppingListDialog"
+  (click)="onShoppingListConfirmed(false)">
+</div>
+
+<div 
+  class="modal show d-block" 
+  *ngIf="showShoppingListDialog" 
+  tabindex="-1" 
+  style="z-index: 1050;">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span class="glyphicon glyphicon-shopping-cart"></span>
+          Add Ingredients to Shopping List
+        </h4>
+        <button type="button" class="close" (click)="onShoppingListConfirmed(false)">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>The following <strong>{{recipe?.ingredients?.length}}</strong> ingredients from "<strong>{{recipe?.title}}</strong>" will be added to your shopping list:</p>
+        
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-12">
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let ingredient of recipe?.ingredients">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <strong>{{ingredient.name}}</strong>
+                      </div>
+                      <div class="col-md-3">
+                        <span class="text-muted">{{ingredient.amount}} {{ingredient.unit}}</span>
+                      </div>
+                      <div class="col-md-3">
+                        <small class="text-muted">({{ingredient.category}})</small>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="alert alert-info">
+          <span class="glyphicon glyphicon-info-sign"></span>
+          <strong>Note:</strong> If any of these ingredients are already in your shopping list, the quantities will be combined.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" (click)="onShoppingListConfirmed(true)">
+          <span class="glyphicon glyphicon-plus"></span> Add to Shopping List
+        </button>
+        <button class="btn btn-secondary" (click)="onShoppingListConfirmed(false)">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Form Modal -->
+<div 
+  class="modal-backdrop-custom" 
+  *ngIf="showEditForm"
+  (click)="onEditCancelled()">
+</div>
+
+<div 
+  class="modal show d-block" 
+  *ngIf="showEditForm" 
+  tabindex="-1" 
+  style="z-index: 1050;">
+  <div class="modal-dialog modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span class="glyphicon glyphicon-edit"></span>
+          Edit Recipe
+        </h4>
+        <button type="button" class="close" (click)="onEditCancelled()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <rp-recipe-edit 
+          [originalRecipe]="recipe" 
+          (recipeSaved)="onRecipeSaved($event)" 
+          (cancelEdit)="onEditCancelled()"
+        ></rp-recipe-edit>
+      </div>
+    </div>
+  </div>
+</div>

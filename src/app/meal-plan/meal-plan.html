@@ -1,0 +1,122 @@
+<div class="container-fluid">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="row">
+        <div class="col-xs-3">
+          <button class="btn btn-default btn-sm" (click)="previousWeek()">
+            <span class="glyphicon glyphicon-chevron-left"></span> Previous
+          </button>
+        </div>
+        <div class="col-xs-6 text-center">
+          <h4 style="margin: 8px 0;">
+            <strong>Meal Plan</strong> {{getWeekRange()}}
+          </h4>
+        </div>
+        <div class="col-xs-3 text-right">
+          <button class="btn btn-default btn-sm" (click)="nextWeek()">
+            Next <span class="glyphicon glyphicon-chevron-right"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week -->
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="day-grid-container" style="display: flex; gap: 8px;">
+        <div class="day-box" 
+             *ngFor="let dayObj of weekDays"
+             style="flex: 1; min-width: 0; width: 14.28%;">
+          
+          <!-- Header -->
+          <div class="panel panel-default" style="margin-bottom: 0;">
+            <div class="panel-heading text-center" style="padding: 8px;">
+              <strong style="font-size: 14px;">{{dayObj.day}}</strong><br>
+              <small>{{formatDate(dayObj.date)}}</small>
+            </div>
+            
+            <!-- Meals -->
+            <div class="panel-body" style="padding: 10px; min-height: 120px; max-height: 200px; overflow-y: auto;">
+              
+              <!-- Meal cards -->
+              <div *ngFor="let meal of dayObj.meals" 
+                   class="meal-card"
+                   style="background: #f0f8ff; padding: 5px; margin-bottom: 5px; border-radius: 3px; border-left: 2px solid #5bc0de; font-size: 11px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="flex: 1; overflow: hidden;">
+                    <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{meal.title}}</strong>
+                  </div>
+                  <button class="btn btn-xs btn-danger" 
+                          (click)="removeRecipeFromDay(dayObj.day, meal.id)"
+                          style="padding: 2px 4px; font-size: 10px; margin-left: 5px;">×</button>
+                </div>
+              </div>
+              
+              <!-- Add button -->
+              <button class="btn btn-success btn-xs btn-block" 
+                      (click)="openRecipeModal(dayObj.day)"
+                      style="margin-top: 8px; font-size: 11px;">
+                <span class="glyphicon glyphicon-plus"></span> Add
+              </button>
+              
+              <!-- If empty -->
+              <div *ngIf="dayObj.meals.length === 0" 
+                   class="text-center text-muted"
+                   style="margin-top: 20px;">
+                <span class="glyphicon glyphicon-cutlery" style="font-size: 16px; display: block; margin-bottom: 5px;"></span>
+                <small style="font-size: 10px;">No meals</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recipe Modal -->
+<div class="modal fade" 
+     [style.display]="showRecipeModal ? 'block' : 'none'"
+     [class.in]="showRecipeModal"
+     style="background: rgba(0,0,0,0.5);"
+     *ngIf="showRecipeModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closeRecipeModal()">
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title">Add Recipe to {{selectedDay}}</h4>
+      </div>
+      <div class="modal-body">
+        <div class="list-group">
+          <div class="list-group-item" 
+               *ngFor="let recipe of availableRecipes"
+               (click)="addRecipeToDay(recipe)"
+               style="cursor: pointer;">
+            <div class="media">
+              <div class="media-left">
+                <img class="media-object" 
+                  [src]="recipe.imageUrl || 'assets/images/default-recipe.jpg'" 
+                  [alt]="recipe.title"
+                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"
+                  (error)="$event.target.src='assets/images/default-recipe.jpg'">
+              </div>
+              <div class="media-body">
+                <h6 class="media-heading"><strong>{{recipe.title}}</strong></h6>
+                <small class="text-muted">{{recipe.description}}</small><br>
+                <small class="text-info">
+                  <span class="glyphicon"></span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="closeRecipeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

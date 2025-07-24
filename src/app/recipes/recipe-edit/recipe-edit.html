@@ -1,0 +1,69 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+      
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label for="title">Recipe Title:</label>
+          <input
+            type="text"
+            id="title"
+            class="form-control"
+            size="120"
+            max="120"
+            name="title"
+            required
+            [(ngModel)]="recipe.title"
+            #title="ngModel">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label for="description">Recipe Description:</label>
+          <textarea
+            id="description"
+            class="form-control"
+            name="description"
+            rows="3"
+            required
+            [(ngModel)]="recipe.description"
+            #description="ngModel"></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label for="imageUrl">Image URL:</label>
+          <input
+            type="text"
+            id="imageUrl"
+            class="form-control"
+            size="150"
+            max="255"
+            name="imageUrl"
+            [(ngModel)]="recipe.imageUrl">
+        </div>
+      </div>
+
+      <!-- Error Messages -->
+      <div *ngIf="(title.invalid && title.touched) || (description.invalid && description.touched)" 
+           class="alert alert-danger">
+        The Recipe Title and Recipe Description are required fields.
+      </div>
+
+      <!-- Form Buttons -->
+      <div class="row">
+        <div class="col-xs-12 btn-toolbar">
+          <button class="btn btn-success" type="submit" [disabled]="f.invalid">
+            <span class="glyphicon glyphicon-floppy-disk"></span> Save
+          </button>
+          <button class="btn btn-primary" type="button" (click)="onCancel()">
+            <span class="glyphicon glyphicon-remove"></span> Cancel
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+input.ng-invalid {
+  border: 1px solid red;
+}
+
+textarea.ng-invalid {
+  border: 1px solid red;
+}
+
+select.ng-invalid {
+  border: 1px solid red;
+}
+
+.modal {
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-dialog {
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
